@@ -1,0 +1,115 @@
+<ui:composition template="template_startseite.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="content">
+        <div class="container">
+            <div class="sixteen columns add-bottom">
+
+                <h1>Reservation - Step 3
+                    <span>Lorem ipsum dolor sit amet, per ne purto corpora, cu eam cetero dolores.</span>
+                </h1>
+            </div>
+            <div class="sixteen columns">
+
+                <c:if test="${!sessionScope.loggedIn}">
+                    <h2>You have to be logged in to make an reservation!</h2>
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.</p>
+
+                    <h3>Questions?</h3>
+                    <p>Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie, musica, sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li pronunciation e li plu commun vocabules. </p>
+                </c:if>
+
+
+
+                <c:if test="${sessionScope.loggedIn and sessionScope.ErrorSave}">
+                    <h3>Error while saving to database!</h3>
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+                </c:if>
+
+                <c:if test="${sessionScope.loggedIn and sessionScope.ErrorMail}">
+                    <h3>Error while sending confirmation mail!</h3>
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+                </c:if>
+
+                <c:if test="${sessionScope.loggedIn and !sessionScope.Confirmed}">
+                    <h3>General error!</h3>
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+                </c:if>
+
+                <c:if test="${sessionScope.loggedIn and sessionScope.Confirmed}">
+                    <h2>Reservation successfully completed!</h2>
+                    <p class="">You will recive a confirmation by mail in the next few minutes.</p>
+                </c:if>
+
+                <c:if test="${sessionScope.loggedIn and !sessionScope.Confirmed}">
+                    <h:form class="reservationForm">
+
+                        <fieldset>
+                            <legend>Summary</legend>
+
+                            <table width="100%">
+                                <tr>
+                                    <th><b>Your Reservation</b></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <td><b>Personal Information</b></td>
+                                    <td>${reservationManager.guest.firstname}<br/>${reservationManager.guest.nachname}<br/>${reservationManager.guest.email}</td>
+                                    <td>${reservationManager.address.strasse}<br/>${reservationManager.address.plz} ${reservationManager.address.ort}<br/>${reservationManager.getLand()}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Your Vacation</b></td>
+                                    <td>${reservationManager.arrival} - ${reservationManager.departure}</td>
+                                    <td>
+                                        <c:forEach items="${reservationManager.categories}" var="e">
+                                            <c:if test="${e.chosenRooms gt 0}">
+                                                ${e.chosenRooms}x  ${e.cat.bezeichnung}<br/>
+                                            </c:if>
+                                        </c:forEach>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Addtional Information</b></td>
+                                    <td>${reservationManager.getPackage()}</td>
+                                    <td>
+                                        <c:if test="${reservationManager.pet}">
+                                            With pet.
+                                        </c:if>
+                                        <c:if test="${!reservationManager.pet}">
+                                            No pet.
+                                        </c:if>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Estimated Costs for</b></td>
+                                    <td>#{reservationManager.days} Days</td>
+                                    <td>                            
+                                        <h:outputText value="#{reservationManager.totalCosts}">
+                                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2" groupingUsed="false" />
+                                        </h:outputText>
+                                        €
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <c:if test="#{sessionScope.ErrorSave}">
+                                <p class="validation">Error while trying to finish reservation. Please try again or give us a call!</p>
+                            </c:if>
+
+                        </fieldset>
+
+                        <h:commandButton action="#{reservationManager.stepTwo()}" value="Step 2" />
+                        <h:commandButton action="#{reservationManager.finish()}" value="Finish" />
+                    </h:form>
+                </c:if>
+
+                <p><br /></p>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
